@@ -1,23 +1,31 @@
 version: "3"
 services:
-  mongo:
-    image: "mongo:latest"
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=password
-    volumes:
-      - mongodata:/data/db
   growthbook:
     image: "growthbook/growthbook:latest"
     ports:
       - "3000:3000"
       - "3100:3100"
-    depends_on:
-      - mongo
     environment:
-      - MONGODB_URI=mongodb://root:password@mongo:27017/growthbook?authSource=admin
+      # Connect to external MongoDB Atlas
+      - MONGODB_URI=mongodb+srv://hassan:${DB_PASSWORD}@growthbook.wkk6xrb.mongodb.net/?retryWrites=true&w=majority&appName=Growthbook
+      
+      # Replace with EC2 server's public IP address
+      - APP_ORIGIN=http://${SERVER_IP}:3000
+      - API_HOST=http://${SERVER_IP}:3100
+      
+      # Production settings
+      - NODE_ENV=production
+      - JWT_SECRET=${JWT_SECRET}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      
+      # Optional but recommended for production
+      - EXPRESS_TRUST_PROXY_OPTS=true
+      - EXPERIMENT_REFRESH_FREQUENCY=6
+      - QUERY_CACHE_TTL_MINS=60
     volumes:
       - uploads:/usr/local/src/app/packages/back-end/uploads
+    command: npm run start:with-tracing # Enable OpenTelemetry for better monitoring
+    restart: always
+
 volumes:
   uploads:
-  mongodata:

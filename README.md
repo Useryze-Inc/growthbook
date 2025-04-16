@@ -81,3 +81,43 @@ GrowthBook is an Open Core product. The bulk of the code is under the permissive
 View the `LICENSE` file in this repository for the full text and details.
 
 ![GrowthBook Repository Stats](https://repobeats.axiom.co/api/embed/13ffc63ec5ce7fe45efa95dd326d9185517f0a15.svg "GrowthBook Repository Stats")
+
+# GrowthBook EC2 Deployment
+
+This is a deployment configuration for running GrowthBook on an EC2 instance using Docker.
+
+## Prerequisites
+
+1. An EC2 instance running with Docker and Docker Compose installed
+2. A MongoDB Atlas account with a database set up
+3. Open ports 3000 and 3100 in your EC2 security group
+
+## Deployment Steps
+
+1. Clone this repository to your EC2 instance
+2. Make the deployment script executable:
+   ```
+   chmod +x deploy.sh
+   ```
+3. Run the deployment script:
+   ```
+   ./deploy.sh
+   ```
+4. Enter your MongoDB password when prompted
+5. Access GrowthBook at http://YOUR_EC2_IP:3000
+
+## Important Notes
+
+- The script will generate random secure strings for JWT_SECRET and ENCRYPTION_KEY
+- Save these values somewhere secure (they will be displayed after running the script)
+- If you need to redeploy, you should use the same values to avoid losing access to encrypted data
+
+## Production Configurations
+
+The deployment includes:
+- External MongoDB Atlas connection
+- Production environment settings
+- OpenTelemetry tracing
+- Restart policy for container resilience
+
+For additional configurations, see the [GrowthBook Environment Variables](https://docs.growthbook.io/self-host/env) and [Production Best Practices](https://docs.growthbook.io/self-host/production) documentation.
